@@ -139,7 +139,7 @@ function login(){
     var senha = document.getElementById("lPass").value;
 $.get("login.php?user="+usuario+"&password="+senha+"&action=login", function( data ) {
   if(data=="OK"){
-    $.get("db/?action=load&user=" + usuario + ";" + senha).done(function (data) {
+    $.get("../db/?action=load&user=" + usuario + ";" + senha).done(function (data) {
       console.log(data)
           localStorage.correios_tracker_list = data;
           localStorage.correios_tracker_login = "true", localStorage.correios_tracker_user = usuario+";"+senha;

@@ -24,6 +24,7 @@
     <h4>Registrar</h4>
     <input id="rUser" placeholder="usuário"><br>
     <input id="rPass"placeholder="senha"><br>
+    <input id="rPassConfirm"placeholder="confirme sua senha"><br>
     <button onclick="registrar()" class="btn">Registrar</button><br><br>
     <a href="../" onclick="localStorage.correios_tracker_login = 'true', localStorage.correios_tracker_user = ''">Rastrear uma encomenda sem login</a>
   </div>
@@ -116,6 +117,10 @@ if(localStorage.correios_tracker_stayLogged=="true"){
 function registrar(){
     var usuario = document.getElementById("rUser").value;
     var senha = document.getElementById("rPass").value;
+    var senhaConfirma = document.getElementById("rPassConfirm").value;
+    if(senha!=senhaConfirma){
+      alert("As senhas não coincidem")
+    } else {
 $.get("login.php?user="+usuario+"&password="+senha+"&action=register", function( data ) {
   if(data=="OK"){
      alert("Usuário registrado, agora você pode fazer login.")
@@ -126,6 +131,7 @@ $.get("login.php?user="+usuario+"&password="+senha+"&action=register", function(
     localStorage.correios_tracker_user = ""
   }
 });
+    }
 }
 
 function login(){

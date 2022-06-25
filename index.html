@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <title>Correios Tracker</title>
+</head>
+
+<body>
+  <div class="header"><img class='logo'
+      src="https://www.correios.com.br/estrutura-da-pagina/mais-acessados/acompanhe-seu-objeto/@@images/imagem_card/thumb">
+    <h3>Correios Tracker</h3><input value='' placeholder="codigo de rastreio" id="code" class="inputCode"><button
+      onclick="track(document.getElementById('code').value)" class="btn">Rastrear</button>
+    <button class="btn loadSavedObjects" onclick="loadSavedObjects()">Objetos salvos</button>
+  </div>
+  <div id="result"></div>
+</body>
+
+
+<style>
+    body {
+      margin: 0;
+      overflow-x: hidden;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+  
+    .logo {
+  
+      width: 50px;
+      margin: -25px;
+  
+    }
+  
+    #login {
+        text-align: center;
+    }
+
+    .btn {
+  
+      background: #1e667b;
+      color: white;
+      border: none;
+      padding: 8px;
+      border-radius: 4px;
+      margin: 5px;
+  
+    }
+  
+    .inputCode {
+  
+      background: #e3f2f6;
+      border: none;
+      padding: 8px;
+      border-radius: 4px;
+      margin-right: 5px;
+  
+    }
+  
+    .header {
+  
+      text-align: center;
+      background: #0d2a42;
+      margin: 0;
+      width: 96%;
+      color: white;
+      padding: 2%;
+  
+    }
+  
+    .status {
+      text-align: center;
+      border: 1px solid #0d2a42;
+      margin: 5px;
+      border-radius: 17px;
+      padding: 5px;
+    }
+  
+    .package {
+      text-align: center;
+      margin: 5px;
+    }
+  
+    .status>img {
+  
+      width: 70px;
+      margin-bottom: -20px;
+  
+    }
+</style>
+
+
+</html>
+
+
+<script>
+
+if (localStorage.correios_tracker_stayLogged == "true") {
+    $("body").append(`<div id="user" style='position: fixed;top: 5px;left: 5px;color: white;'><span>${localStorage.correios_tracker_user.split(';')[0]}</span><a onclick='localStorage.correios_tracker_list = "";localStorage.correios_tracker_login = "false", localStorage.correios_tracker_user = "", localStorage.correios_tracker_stayLogged = "false", location.href="login/"' style="border:none;margin-left: 5px;color: #3c8fa7;cursor:pointer">Sair</a></div>`)
+    $("body").append(`<div id="user" style='position: fixed;top: 5px;right: 5px;color: white;'><a onclick='location.reload()' style="border:none;margin-right: 5px;color: #3c8fa7;cursor:pointer">Recarregar</a></div>`)
+}
+localStorage.correios_tracker_list == null ? localStorage.correios_tracker_list = "" : undefined;
+
+loadSavedObjects();
+
+function saveObj() {
+    objeto = localStorage.correios_tracker_code;
+    var nome = prompt("Insira um nome para o objeto " + objeto);
+    if (nome != null && nome != undefined && nome != "") {
+        alert("Objeto " + objeto + " salvo com nome " + nome);
+        localStorage.correios_tracker_list = (objeto + "@" + nome + ";") + localStorage.correios_tracker_list
+        loadSavedObjects();
+        if (localStorage.correios_tracker_login == "true" && localStorage.correios_tracker_user != "") {
+            $.get("db/?action=save&user=" + localStorage.correios_tracker_user + "&data=" + localStorage.correios_tracker_list);
+        }
+    } else {
+        alert("Nome inválido")
+    }
+}
+
+function delObj(obj) {
+    console.log(obj)
+    remove = obj + ";";
+    localStorage.correios_tracker_list = localStorage.correios_tracker_list.replaceAll(remove, "");
+    loadSavedObjects();
+    if (localStorage.correios_tracker_login == "true" && localStorage.correios_tracker_user != "") {
+        $.get("db/?action=save&user=" + localStorage.correios_tracker_user + "&data=" + localStorage.correios_tracker_list);
+    }
+}
+
+
+function loadSavedObjects() {
+    document.getElementById("code").value = ""
+    document.querySelector(".loadSavedObjects").hidden = true;
+    var arr = localStorage.correios_tracker_list.split(";").slice(0, -1);;
+    $("#result").html("");
+    for (i = 0; i < (arr).length; i++) {
+        var obj = arr[i];
+        $("#result").append(`
+        <div class='status savedObjects'>
+        <h3>${obj.split('@').pop()}</h3>
+        <p>${obj.split('@')[0]}</p>
+        <input value="${obj.split('@')[0]}@${obj.split('@').pop()}" hidden>
+        <button onclick="track(this.previousElementSibling.value.split('@')[0])" class="btn">Rastrear</button>
+        <button onclick="delObj(this.previousElementSibling.previousElementSibling.value)" class="btn">Deletar</button>
+        <p>Ultimo evento: ${getLastEvent(obj.split('@')[0])}</p>
+        </div>
+  `);
+
+
+        function getLastEvent(i) {
+            $.ajax({
+                url: "track/?cod=" + i,
+                type: 'get',
+                dataType: 'html',
+                async: false,
+                success: function(data) {
+                    evento = JSON.parse(data).objetos[0].eventos[0]; // ultimo evento do objeto
+                }
+            });
+            var horaEvento = evento.dtHrCriado.slice(8, 10) + "/" + evento.dtHrCriado.slice(5, 7) + "/" + evento.dtHrCriado.slice(0, 4) + " - " + evento.dtHrCriado.slice(11, 16) + (evento.dtHrCriado.slice(11, 13) >= 12 ? "PM" : "AM")
+            var descricaoEvento = evento.descricao;
+            return descricaoEvento + " - " + horaEvento;
+        }
+    }
+}
+
+function track(i) {
+    document.querySelector(".loadSavedObjects").hidden = false;
+    $("#result").html(`<div class="status">aguarde...</div>`);
+    $.get("track/?cod=" + i)
+        .done(function(data) {
+            $("#result").html("")
+            var codObjeto = JSON.parse(data).objetos[0].codObjeto
+            var objeto = JSON.parse(data).objetos[0]
+            localStorage.setItem("correios_tracker_code", codObjeto)
+            $("#result").append(`<div class="package"> Objeto  ${codObjeto} <button onclick="saveObj()" class="btn">Salvar</button></div>`);
+            $("#result").append(`<div class="status">  ${objeto.tipoPostal.categoria + " - " + objeto.tipoPostal.descricao}</div>`);
+            for (i = 0; i < (objeto.eventos).length; i++) {
+                var evento = objeto.eventos[i];
+                var horaEvento = evento.dtHrCriado.slice(8, 10) + "/" + evento.dtHrCriado.slice(5, 7) + "/" + evento.dtHrCriado.slice(0, 4) + " - " + evento.dtHrCriado.slice(11, 16) + (evento.dtHrCriado.slice(11, 13) >= 12 ? "PM" : "AM");
+                var eventoDescricao = evento.descricao;
+                var eventoTipo = evento.unidade.tipo;
+                let eventoDetalhe = "";
+                let eventoUnidadeRemetente = "";
+                let eventoUnidadeDestino = "";
+                let aguardandoRetiradaEndereco = "";
+
+                // Detalhe do evento
+                if (evento.detalhe != undefined) {
+                    eventoDetalhe = evento.detalhe
+                }
+
+                // Unidade remetente
+                if (evento.unidade.endereco.cidade == null) {
+                    eventoUnidadeRemetente = evento.unidade.nome
+                } else {
+                    eventoUnidadeRemetente = evento.unidade.endereco.cidade + "/" + evento.unidade.endereco.uf;
+                }
+
+                // Unidade destino
+                if (evento.unidadeDestino != null) {
+                    eventoUnidadeDestino = " para " + evento.unidadeDestino.endereco.cidade + "/" + evento.unidadeDestino.endereco.uf;
+                }
+
+                // Endereço aguardando retirada
+                if (evento.codigo == "LDI") {
+                    aguardandoRetiradaEndereco = "<br>" + evento.unidade.endereco.logradouro + ", " + evento.unidade.endereco.numero + ", " + evento.unidade.endereco.bairro + " - " + evento.unidade.endereco.cidade + "/" + evento.unidade.endereco.uf
+                }
+
+                var eventoIcone = "https://proxyapp.correios.com.br" + evento.urlIcone
+
+                $("#result").append(`
+      <div class='status'>
+        <img src="${eventoIcone}" />
+        <h3>${eventoDescricao}</h3>
+        <p>${horaEvento}</p>
+        <p>${eventoTipo} ${eventoUnidadeRemetente} ${eventoUnidadeDestino} ${aguardandoRetiradaEndereco}</p>
+        <p>${eventoDetalhe}</p>
+        </div>
+        `)
+            }
+
+
+
+        });
+}
+
+</script>

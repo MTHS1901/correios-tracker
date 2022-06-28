@@ -1,9 +1,13 @@
 # correios-tracker
 Rastreamento dos correios em Javascript e PHP com banco de dados simples.
 
-Rastreio de encomenda diretamente dos correios com interface para o usuário e com banco de dados para armazenar os objetos.
- Exibir Google Maps para unidades de destino
- Mostrar "Novo evento" quando um objeto tiver uma atualização
+## Projeto permite rastreio de encomenda de uma forma extremamente fácil, podendo armazenar seus objetos para rastrear a qualquer momento.
+#### Banco de dados simples (PHP), permite armazenar objetos em um usuário e senha.
+### Configurações personalizaveis no aplicativo
+#### Exibir Google Maps (iframe mostrando local) para unidades de destino.
+#### Mostrar "Novo evento" quando um objeto tiver uma atualização.
+
+Versão em funcionamento (dominio temporario): https://androgamer.org/app/correiostracker
 
 API: https://proxyapp.correios.com.br/v1/sro-rastro/${codigoDeRastreio} eu sei, isso irá te ajudar muito! :)
 

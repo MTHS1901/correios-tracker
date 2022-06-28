@@ -1,3 +1,5 @@
+<!-- DESENVOLVIDO POR MTHS1901 - https://devm.com.br || https://github.com/mths1901 -->
+<!-- USO STYLE E JS DENTRO DO HTML PARA FACILITAR MINHA VIDA -->
 <!DOCTYPE html>
 <html lang="pt-BR">
 
@@ -10,85 +12,149 @@
 </head>
 
 <body>
-  <div class="header"><img class='logo'
-      src="https://www.correios.com.br/estrutura-da-pagina/mais-acessados/acompanhe-seu-objeto/@@images/imagem_card/thumb">
-    <h3>Correios Tracker</h3><input value='' placeholder="codigo de rastreio" id="code" class="inputCode"><button
+  <div class="header"><a onclick='location.href="./"'><img class='logo'
+        src="https://www.correios.com.br/estrutura-da-pagina/mais-acessados/acompanhe-seu-objeto/@@images/imagem_card/thumb">
+      <h3>Correios Tracker</h3>
+    </a><input value='' placeholder="codigo de rastreio" id="code" class="inputCode"><button
       onclick="track(document.getElementById('code').value)" class="btn">Rastrear</button>
-    <button class="btn loadSavedObjects" onclick="loadSavedObjects()">Objetos salvos</button>
   </div>
-  <div id="result"></div>
+  <div id="content"></div>
+  <div class="footer"><a href='https://devm.com.br' target="_blank">Dev-M - Tecnologia da Informação</a></div>
 </body>
 
-
 <style>
-    body {
-      margin: 0;
-      overflow-x: hidden;
-      font-family: Arial, Helvetica, sans-serif;
-    }
-  
-    .logo {
-  
-      width: 50px;
-      margin: -25px;
-  
-    }
-  
-    #login {
-        text-align: center;
-    }
+  body {
+    -webkit-tap-highlight-color: transparent;
+    margin: 0;
+    overflow-x: hidden;
+    font-family: Arial, Helvetica, sans-serif;
+  }
 
-    .btn {
-  
-      background: #1e667b;
-      color: white;
-      border: none;
-      padding: 8px;
-      border-radius: 4px;
-      margin: 5px;
-  
-    }
-  
-    .inputCode {
-  
-      background: #e3f2f6;
-      border: none;
-      padding: 8px;
-      border-radius: 4px;
-      margin-right: 5px;
-  
-    }
-  
-    .header {
-  
-      text-align: center;
-      background: #0d2a42;
-      margin: 0;
-      width: 96%;
-      color: white;
-      padding: 2%;
-  
-    }
-  
-    .status {
-      text-align: center;
-      border: 1px solid #0d2a42;
-      margin: 5px;
-      border-radius: 17px;
-      padding: 5px;
-    }
-  
-    .package {
-      text-align: center;
-      margin: 5px;
-    }
-  
-    .status>img {
-  
-      width: 70px;
-      margin-bottom: -20px;
-  
-    }
+  .logo {
+    width: 50px;
+    margin: -25px;
+
+  }
+
+  #content {
+    margin-bottom: 45px;
+  }
+
+  #login {
+    text-align: center;
+  }
+
+  .btn {
+
+    background: #1e667b;
+    color: white;
+    border: none;
+    padding: 8px;
+    border-radius: 4px;
+    margin: 5px;
+
+  }
+
+  .inputCode {
+
+    background: #e3f2f6;
+    border: none;
+    padding: 8px;
+    border-radius: 4px;
+    margin-right: 5px;
+
+  }
+
+  .header {
+
+    text-align: center;
+    background: #0d2a42;
+    margin: 0;
+    width: 96%;
+    color: white;
+    padding: 2%;
+
+  }
+
+  .header>a {
+    cursor: pointer;
+  }
+
+  .footer {
+    background: #0d2a42;
+    color: white;
+    text-align: center;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    padding: 10px;
+
+  }
+
+  .footer>a {
+    color: white;
+    text-decoration: none;
+  }
+
+  .status {
+    text-align: center;
+    border: 1px solid #0d2a42;
+    margin: 5px;
+    border-radius: 17px;
+    padding: 5px;
+  }
+
+  .loading {
+    text-align: center;
+    border: 1px solid #0d2a42;
+    margin: 5px;
+    border-radius: 17px;
+    padding: 5px;
+  }
+
+  .package {
+    text-align: center;
+    margin: 5px;
+  }
+
+  .status>img {
+
+    width: 70px;
+    margin-bottom: -20px;
+
+  }
+
+  .copyDirectLink {
+
+    width: 250px;
+    font-size: 12px;
+    border: none;
+    background: white;
+    padding: 5px;
+    color: #6b6b6b;
+
+  }
+
+  .copyDirect {
+    background: #0d2a42;
+    color: white;
+    padding: 10px;
+    border-radius: 5px;
+    max-width: 350px;
+    align-items: center;
+    align-content: center;
+    align-self: center;
+    display: inline-block;
+  }
+
+  .eventChange {
+    color: white;
+    background: #ff0303;
+    border-radius: 10px;
+    padding: 5px;
+    display: inline-block;
+    margin-bottom: 5px;
+  }
 </style>
 
 
@@ -97,135 +163,287 @@
 
 <script>
 
-if (localStorage.correios_tracker_stayLogged == "true") {
-    $("body").append(`<div id="user" style='position: fixed;top: 5px;left: 5px;color: white;'><span>${localStorage.correios_tracker_user.split(';')[0]}</span><a onclick='localStorage.correios_tracker_list = "";localStorage.correios_tracker_login = "false", localStorage.correios_tracker_user = "", localStorage.correios_tracker_stayLogged = "false", location.href="login/"' style="border:none;margin-left: 5px;color: #3c8fa7;cursor:pointer">Sair</a></div>`)
-    $("body").append(`<div id="user" style='position: fixed;top: 5px;right: 5px;color: white;'><a onclick='location.reload()' style="border:none;margin-right: 5px;color: #3c8fa7;cursor:pointer">Recarregar</a></div>`)
-}
-localStorage.correios_tracker_list == null ? localStorage.correios_tracker_list = "" : undefined;
+  // Minimiza alguma coisa
+  const $s = localStorage;
+  const siteURL = "https://androgamer.org/app/correiostracker/"; // URL DO SITE
 
-loadSavedObjects();
+  // Configurações (padrão ativa)
+  if ($s.correios_tracker_settings_novoEvento == null) $s.correios_tracker_settings_novoEvento = "checked";
 
-function saveObj() {
-    objeto = localStorage.correios_tracker_code;
-    var nome = prompt("Insira um nome para o objeto " + objeto);
-    if (nome != null && nome != undefined && nome != "") {
-        alert("Objeto " + objeto + " salvo com nome " + nome);
-        localStorage.correios_tracker_list = (objeto + "@" + nome + ";") + localStorage.correios_tracker_list
-        loadSavedObjects();
-        if (localStorage.correios_tracker_login == "true" && localStorage.correios_tracker_user != "") {
-            $.get("db/?action=save&user=" + localStorage.correios_tracker_user + "&data=" + localStorage.correios_tracker_list);
+  // verifica se possui um URL direto para rastreamento ex: ${url}/?objeto=AB123456789BR
+  var directObject = new URL(location.href);
+  var directObject = directObject.searchParams.get("objeto");
+  if (directObject != null) {
+    directObject.length == 13 ? track(document.getElementById("code").value = directObject) : location.href = "/";
+  } else {
+    directObject = false;
+  }
+
+  // Se não houver nenhum objeto salvo, cria o local storage para evitar erro de array vazia
+  $s.correios_tracker_list == null ? $s.correios_tracker_list = "" : undefined;
+
+  // faz login e obtem pacotes salvos no usuário
+  if ($s.correios_tracker_login == "true" && ($s.correios_tracker_user != "" && $s.correios_tracker_user != null)) {
+    var user = $s.correios_tracker_user.split(';')[0];
+    var svg_user = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" class="bi bi-person-fill" style="margin-bottom: -2px;margin-right: 5px;" viewBox="0 0 16 16"><path d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z"></path></svg>`
+    $("body").append(`<div id="user" style='position: absolute;top: 5px;left: 5px;color: white;'><span>${svg_user}${user}</span><a onclick='$s.correios_tracker_list = "";$s.correios_tracker_login = "false", $s.correios_tracker_user = "", location.reload()' style="border:none;margin-left: 5px;color: #3c8fa7;cursor:pointer">Sair</a></div>`)
+    $("body").append(`<div style='position: absolute;top: 15px;right: 5px;'><a onclick='location.reload()' style="border:none;margin-right: 5px;color: white!important;cursor:pointer" class='btn update'>Atualizar</a></div>
+    <div style='position: absolute;top: 50px;right: 5px;'><a onclick='settings()' style="border:none;margin-right: 5px;color: white!important;cursor:pointer" class='btn'>Opções</a></div>`);
+    $("#content").before(`<div class="loading">aguarde, atualizando objetos...</div>`);
+    $.get("db/?action=load&user=" + btoa($s.correios_tracker_user) + "&" + Math.random())
+      .done(function (data) {
+        if (data != $s.correios_tracker_list.split(";").slice(0, -1) && directObject == false) {
+          $s.correios_tracker_list = data;
+          loadObjects();
+          $(".loading").remove();
         }
+        if (data == "") {
+          $(".loading").html(`nenhum objeto salvo neste usuário, para adicionar um novo objeto, rastreie um objeto e clique em salvar.`);
+        }
+      })
+  }
+  // se o usuário não estiver logado, exibe form de login/registro 
+  else {
+    $.get("user/loginForm.html")
+      .done(function (data) {
+        $("#content").html(data)
+      });
+  }
+
+  // Função salva um objeto
+  function saveObj(objeto) {
+    if ($s.correios_tracker_login == "true") {
+      var nome = prompt("Insira um nome para o objeto " + objeto);
+      if (nome != null && nome != undefined && nome != "") {
+        alert("Objeto " + objeto + " salvo com nome " + nome);
+        $s.correios_tracker_list = (objeto + "@" + nome + ";") + $s.correios_tracker_list
+        if ($s.correios_tracker_login == "true" && $s.correios_tracker_user != "") {
+          syncUserList();
+        } else {
+          loadObjects();
+        }
+      } else {
+        alert("Nome inválido");
+      }
     } else {
-        alert("Nome inválido")
+      alert("Para salvar seus objetos é preciso ter uma conta, caso não tenha uma você pode se registar é simples e rápido."), location.reload();
     }
-}
+  }
 
-function delObj(obj) {
-    console.log(obj)
-    remove = obj + ";";
-    localStorage.correios_tracker_list = localStorage.correios_tracker_list.replaceAll(remove, "");
-    loadSavedObjects();
-    if (localStorage.correios_tracker_login == "true" && localStorage.correios_tracker_user != "") {
-        $.get("db/?action=save&user=" + localStorage.correios_tracker_user + "&data=" + localStorage.correios_tracker_list);
+  // Função deleta um objeto
+  function delObj(objeto) {
+    if (confirm('Tem certeza que deseja excluir o objeto\n"' + objeto.split('@').pop() + ' (' + objeto.split('@')[0] + ')"?')) {
+      remove = objeto + ";";
+      $s.correios_tracker_list = $s.correios_tracker_list.replaceAll(remove, "");
+      if ($s.correios_tracker_login == "true" && $s.correios_tracker_user != "") {
+        syncUserList();
+      } else {
+        loadObjects();
+      }
     }
-}
+  }
+
+  // Configurações
+
+  function settings() {
+    $(".update").text("Meus objetos");
+    // padrão inativo (mapsDestino)
+    var a = $s.correios_tracker_settings_mapsDestino;
+
+    // padrão ativo (novoEvento)
+    var b = $s.correios_tracker_settings_novoEvento
+
+    $("#content").html(`<div class="status">
+      <input value='mapsDestino' onclick='changeSettings(this)' type='checkbox' ${a}> Exibir Google Maps para unidades de destino<br>
+      <input value='novoEvento' onclick='changeSettings(this)' type='checkbox' ${b}> Mostrar "Novo evento" quando um objeto tiver uma atualização<br>
+      </div>`);
+  }
+
+  // Altera configurações
+  function changeSettings(t) {
+    muda = t.value;
+    aplicado = "Configurações aplicadas";
+
+    // Altera exibir google maps
+    if (muda == "mapsDestino") {
+      localStorage.correios_tracker_settings_mapsDestino = t.checked ? "checked" : "";
+      alert(aplicado);
+    }
+
+    // Altera exibir alerta novo evento
+    if (muda == "novoEvento") {
+      localStorage.correios_tracker_settings_novoEvento = t.checked ? "checked" : ""
+      alert(aplicado);
+    }
+
+  }
+
+  // Função sincroniza objeto salvo/deletado com usuário (se houver login)
+  function syncUserList() {
+    $.get("db/?action=save&user=" + btoa($s.correios_tracker_user) + "&data=" + $s.correios_tracker_list).done(function (a) {
+      if (a == "OK") {
+        console.log("Lista sincronizada!");
+        loadObjects();
+      } else {
+        alert("Falha na sincronização da lista com usuário!")
+      }
+    });
+  }
 
 
-function loadSavedObjects() {
-    document.getElementById("code").value = ""
-    document.querySelector(".loadSavedObjects").hidden = true;
-    var arr = localStorage.correios_tracker_list.split(";").slice(0, -1);;
-    $("#result").html("");
-    for (i = 0; i < (arr).length; i++) {
+
+  // Carrega todos objetos em divs
+  function loadObjects() {
+
+    // Lista objetos
+    if ($s.correios_tracker_list != "") {
+      document.getElementById("code").value = "";
+      var arr = $s.correios_tracker_list.split(";").slice(0, -1);
+      $("#content").html("");
+      for (i = 0; i < (arr).length; i++) {
         var obj = arr[i];
-        $("#result").append(`
+        var objeto = obj.split('@')[0];
+        var nomeObjeto = obj.split('@').pop();
+        $("#content").append(`
         <div class='status savedObjects'>
-        <h3>${obj.split('@').pop()}</h3>
-        <p>${obj.split('@')[0]}</p>
-        <input value="${obj.split('@')[0]}@${obj.split('@').pop()}" hidden>
-        <button onclick="track(this.previousElementSibling.value.split('@')[0])" class="btn">Rastrear</button>
-        <button onclick="delObj(this.previousElementSibling.previousElementSibling.value)" class="btn">Deletar</button>
-        <p>Ultimo evento: ${getLastEvent(obj.split('@')[0])}</p>
+        <h3>${nomeObjeto}</h3>
+        <p>${objeto}</p>
+        <button onclick="track('${objeto}')" class="btn">Rastrear</button>
+        <button onclick="delObj('${objeto + '@' + nomeObjeto}')" class="btn">Deletar</button>
+        <p>${getLastEvent(objeto)}</p>
         </div>
   `);
 
-
+        // Obtem último vento de um objeto especifico (função async = aguarda para liberar div)
         function getLastEvent(i) {
-            $.ajax({
-                url: "track/?cod=" + i,
-                type: 'get',
-                dataType: 'html',
-                async: false,
-                success: function(data) {
-                    evento = JSON.parse(data).objetos[0].eventos[0]; // ultimo evento do objeto
-                }
-            });
-            var horaEvento = evento.dtHrCriado.slice(8, 10) + "/" + evento.dtHrCriado.slice(5, 7) + "/" + evento.dtHrCriado.slice(0, 4) + " - " + evento.dtHrCriado.slice(11, 16) + (evento.dtHrCriado.slice(11, 13) >= 12 ? "PM" : "AM")
-            var descricaoEvento = evento.descricao;
-            return descricaoEvento + " - " + horaEvento;
-        }
-    }
-}
-
-function track(i) {
-    document.querySelector(".loadSavedObjects").hidden = false;
-    $("#result").html(`<div class="status">aguarde...</div>`);
-    $.get("track/?cod=" + i)
-        .done(function(data) {
-            $("#result").html("")
-            var codObjeto = JSON.parse(data).objetos[0].codObjeto
-            var objeto = JSON.parse(data).objetos[0]
-            localStorage.setItem("correios_tracker_code", codObjeto)
-            $("#result").append(`<div class="package"> Objeto  ${codObjeto} <button onclick="saveObj()" class="btn">Salvar</button></div>`);
-            $("#result").append(`<div class="status">  ${objeto.tipoPostal.categoria + " - " + objeto.tipoPostal.descricao}</div>`);
-            for (i = 0; i < (objeto.eventos).length; i++) {
-                var evento = objeto.eventos[i];
-                var horaEvento = evento.dtHrCriado.slice(8, 10) + "/" + evento.dtHrCriado.slice(5, 7) + "/" + evento.dtHrCriado.slice(0, 4) + " - " + evento.dtHrCriado.slice(11, 16) + (evento.dtHrCriado.slice(11, 13) >= 12 ? "PM" : "AM");
-                var eventoDescricao = evento.descricao;
-                var eventoTipo = evento.unidade.tipo;
-                let eventoDetalhe = "";
-                let eventoUnidadeRemetente = "";
-                let eventoUnidadeDestino = "";
-                let aguardandoRetiradaEndereco = "";
-
-                // Detalhe do evento
-                if (evento.detalhe != undefined) {
-                    eventoDetalhe = evento.detalhe
-                }
-
-                // Unidade remetente
-                if (evento.unidade.endereco.cidade == null) {
-                    eventoUnidadeRemetente = evento.unidade.nome
-                } else {
-                    eventoUnidadeRemetente = evento.unidade.endereco.cidade + "/" + evento.unidade.endereco.uf;
-                }
-
-                // Unidade destino
-                if (evento.unidadeDestino != null) {
-                    eventoUnidadeDestino = " para " + evento.unidadeDestino.endereco.cidade + "/" + evento.unidadeDestino.endereco.uf;
-                }
-
-                // Endereço aguardando retirada
-                if (evento.codigo == "LDI") {
-                    aguardandoRetiradaEndereco = "<br>" + evento.unidade.endereco.logradouro + ", " + evento.unidade.endereco.numero + ", " + evento.unidade.endereco.bairro + " - " + evento.unidade.endereco.cidade + "/" + evento.unidade.endereco.uf
-                }
-
-                var eventoIcone = "https://proxyapp.correios.com.br" + evento.urlIcone
-
-                $("#result").append(`
-      <div class='status'>
-        <img src="${eventoIcone}" />
-        <h3>${eventoDescricao}</h3>
-        <p>${horaEvento}</p>
-        <p>${eventoTipo} ${eventoUnidadeRemetente} ${eventoUnidadeDestino} ${aguardandoRetiradaEndereco}</p>
-        <p>${eventoDetalhe}</p>
-        </div>
-        `)
+          $.ajax({
+            url: "track/?cod=" + i,
+            type: 'get',
+            dataType: 'html',
+            async: false,
+            success: function (data) {
+              // Verifica objeto na base dos correios
+              if ((JSON.parse(data).objetos[0].mensagem) == "SRO-020: Objeto não encontrado na base de dados dos Correios.") {
+                evento = false;
+              } else {
+                evento = JSON.parse(data).objetos[0].eventos[0];
+              }
             }
 
+          });
+          if (evento == false) {
+            return "Não localizado na base de dados dos correios"
+          } else {
+            var horaEvento = evento.dtHrCriado.slice(8, 10) + "/" + evento.dtHrCriado.slice(5, 7) + "/" + evento.dtHrCriado.slice(0, 4) + " - " + evento.dtHrCriado.slice(11, 16) + (evento.dtHrCriado.slice(11, 13) >= 12 ? "PM" : "AM")
+            var descricaoEvento = evento.descricao;
+            var response = "Último evento: " + descricaoEvento + " - " + horaEvento;
+            // informa se o ultimo evento é diferente do anterior || informa se evento houve atualização
+            var change = "";
+            if ((response != $s.getItem(i)) && $s.getItem(i) != null && $s.correios_tracker_settings_novoEvento == "checked") {
+              change = `<b class='eventChange'>Novo evento</b><br>`;
+            }
+            $s.setItem(i, response);
+            return change + response
+          }
+        }
+      }
+    } else {
+      $("#content").before(`<div class="loading">nenhum objeto salvo neste usuário, para adicionar um novo objeto, rastreie um objeto e clique em salvar.</div>`);
+    }
+  }
 
+  function getMaps(endereco) {
+    if ($s.correios_tracker_settings_mapsDestino == "checked") {
+      api = "AIzaSyCbI5JWMnXUtTqIX7i0u7TsFKXiOdjKED4";
+      return "<br><iframe width='98%'height='250'style='border: 4px #0d2a42 solid;border-radius: 20px;max-width: 650px;'loading='lazy'allowfullscreenreferrerpolicy='no-referrer-when-downgrade' src='https://www.google.com/maps/embed/v1/place?key=" + api + "&q=" + endereco + "'></iframe>";
+    }
+  }
 
+  // Rastreia um objeto principal
+  function track(i) {
+    $("#content").html(`<div class="loading">aguarde...</div>`);
+    $(".update").text(`Meus objetos`);
+    if (i.length != 13) {
+      alert("Código de rastreio inválido!"), location.reload();
+    } else {
+      $.get("track/?cod=" + i)
+        .done(function (data) {
+          $("#content").html("");
+          $(".loading").remove();
+          var codObjeto = JSON.parse(data).objetos[0].codObjeto
+          var objeto = JSON.parse(data).objetos[0]
+          console.log(objeto)
+          $("#content").append(`
+          <div class="package"> Objeto  ${codObjeto} <button onclick="saveObj('${codObjeto}')" class="btn salvar">Salvar</button><br>
+          <!-- desativei porque o foco do meu app é o usuário salvar os objetos em um usuário e senha e não rastrear diretamente pelo url
+            <div class='copyDirect'>
+          Copie o link para rastrear diretamente<br>
+          <input class='copyDirectLink' value="${siteURL}?objeto=${codObjeto}">
+          </div> -->
+          </div>`);
+          // remove o botão salvar caso objeto ja esteja incluido na lista
+          if (f = $s.correios_tracker_list, f.includes(codObjeto)) $(".salvar").remove()
+
+          // verifica se o objeto existe na base de dados dos correios
+          if (objeto.mensagem == "SRO-020: Objeto não encontrado na base de dados dos Correios.") {
+            $("#content").append(`<div class="status">SRO-020: Objeto não encontrado na base de dados dos Correios.<br>⚠️Caso o objeto tenha sido postado recentemente pode levar algumas horas ou dias para aparecer na base de dados dos Correios.</div>`);
+          } else {
+
+            // Mostra categoria do envio do pacote (pac, sedex etc...)
+            $("#content").append(`<div class="status">  ${objeto.tipoPostal.categoria + " - " + objeto.tipoPostal.descricao}</div>`);
+
+            // Para cada evento cria uma div
+            for (i = 0; i < (objeto.eventos).length; i++) {
+              var evento = objeto.eventos[i]; // Evento
+              var horaEvento = evento.dtHrCriado.slice(8, 10) + "/" + evento.dtHrCriado.slice(5, 7) + "/" + evento.dtHrCriado.slice(0, 4) + " - " + evento.dtHrCriado.slice(11, 16) + (evento.dtHrCriado.slice(11, 13) >= 12 ? "PM" : "AM"); // Hora do evento
+              var eventoDescricao = evento.descricao; // Descrição do evento
+              var eventoTipo = evento.unidade.tipo; // Tipo de unidade
+              let eventoDetalhe = ""; // Detalhe do evento (definido depois, se houver)
+              let eventoUnidadeRemetente = ""; // Unidade remetente (definido depois, se houver)
+              let eventoUnidadeDestino = ""; // Unidade destino (definido depois, se houver)
+              let aguardandoRetiradaEndereco = ""; // Unidade de retirada (definido depois, se houver)
+
+              // Detalhe do evento
+              if (evento.detalhe != undefined) {
+                eventoDetalhe = evento.detalhe
+              }
+
+              // Unidade remetente
+              if (evento.unidade.endereco.cidade == null) {
+                eventoUnidadeRemetente = evento.unidade.nome
+              } else {
+                eventoUnidadeRemetente = evento.unidade.endereco.cidade + "/" + evento.unidade.endereco.uf;
+              }
+
+              // Unidade destino
+              if (evento.unidadeDestino != null) {
+                eventoUnidadeDestino = " para " + (evento.unidadeDestino.endereco.cidade == null ? evento.unidadeDestino.endereco.uf : evento.unidadeDestino.endereco.cidade + "/" + evento.unidadeDestino.endereco.uf);
+                eventoUnidadeDestino = eventoUnidadeDestino + getMaps((evento.unidadeDestino.endereco.cidade == null ? evento.unidadeDestino.endereco.uf : evento.unidadeDestino.endereco.cidade + "/" + evento.unidadeDestino.endereco.uf));
+              }
+
+              // Endereço aguardando retirada
+              if (evento.codigo == "LDI") {
+                endereco = evento.unidade.endereco.logradouro + ", " + evento.unidade.endereco.numero + ", " + evento.unidade.endereco.bairro + " - " + evento.unidade.endereco.cidade + "/" + evento.unidade.endereco.uf;
+                aguardandoRetiradaEndereco = endereco + getMaps(endereco);
+              }
+
+              // Imagem do evento (disponibilizada pelos correios)
+              var eventoIcone = "https://proxyapp.correios.com.br" + evento.urlIcone
+
+              // Cria div por div mostrando detalhes do evento
+              $("#content").append(`
+              <div class='status'>
+              <img src="${eventoIcone}" />
+              <h3>${eventoDescricao}</h3>
+              <p>${horaEvento}</p>
+              <p>${eventoTipo} ${eventoUnidadeRemetente} ${eventoUnidadeDestino} ${aguardandoRetiradaEndereco}</p>
+              <p>${eventoDetalhe}</p>
+              </div>
+              `)
+            }
+
+          }
         });
-}
-
+    }
+  }
 </script>

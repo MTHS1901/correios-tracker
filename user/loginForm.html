@@ -1,0 +1,65 @@
+<div id='login'>
+  <p>Salve suas encomendas em apenas um lugar e rastreie quando quiser.</p>
+  <span style="color:red">for google verification, please use user "google" and password "123456".</span>
+  <h4>Login</h4>
+  <input id="lUser" placeholder="usuário"><br>
+  <input id="lPass" type="password" placeholder="senha"><br>
+  <button id="lLogin" onclick="login()" class="btn">Login</button>
+  <h4>Registrar</h4>
+  <input id="rUser" placeholder="usuário"><br>
+  <input id="rPass" type="password" placeholder="senha"><br>
+  <input id="rPassConfirm" type="password" placeholder="confirme sua senha"><br>
+  <button onclick="registrar()" class="btn">Registrar</button><br><br>
+</div>
+<div id="content"></div>
+
+<script>
+  if (location.pathname.includes("/login")) location.href = "../"; // resolve versões anteriores que redirecionavam para o login
+
+/*   // login automático
+  if (localStorage.correios_tracker_login == "true") {
+    document.getElementById("login").hidden = true;
+    document.getElementById("lUser").value = localStorage.correios_tracker_user.split(';')[0];
+    document.getElementById("lPass").value = localStorage.correios_tracker_user.split(';').pop();
+    login();
+  } */
+
+  function login() {
+    // $("#content").html(`<div class="status">aguarde...</div>`);
+    document.getElementById("login").hidden = true;
+    var usuario = document.getElementById("lUser").value.toLowerCase()
+    var senha = document.getElementById("lPass").value;
+    $.get("user/?user=" + usuario + "&password=" + senha + "&action=login", function (data) {
+      if (data == "OK") {
+        $.get("db/?action=load&user=" + usuario + ";" + senha).done(function (data) {
+          localStorage.correios_tracker_list = data;localStorage.correios_tracker_login = "true", localStorage.correios_tracker_user = usuario + ";" + senha; localStorage.correios_tracker_login = true; location.reload();
+        });
+      } else {
+        alert(data);
+        localStorage.correios_tracker_list = "";localStorage.correios_tracker_login = "false";localStorage.correios_tracker_user = "";localStorage.correios_tracker_login = "false"; document.getElementById("login").hidden = false;
+      }
+    });
+  }
+
+
+  function registrar() {
+    var usuario = document.getElementById("rUser").value.toLowerCase();
+    var senha = document.getElementById("rPass").value;
+    var senhaConfirma = document.getElementById("rPassConfirm").value;
+    if (senha != senhaConfirma) {
+      alert("As senhas não coincidem")
+    } else {
+      $.get("user/?user=" + usuario + "&password=" + senha + "&action=register", function (data) {
+        if (data == "OK") {
+          alert("Usuário registrado com sucesso! agora você pode fazer login e salvar suas encomendas."), location.reload();
+        } else {
+          alert(data)
+          localStorage.correios_tracker_list = data;
+          localStorage.correios_tracker_login = "false";
+          localStorage.correios_tracker_user = ""
+        }
+      });
+    }
+  }
+
+</script>

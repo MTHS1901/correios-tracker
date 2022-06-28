@@ -11,6 +11,6 @@ Versão em funcionamento (dominio temporario): https://androgamer.org/app/correi
 
 API: https://proxyapp.correios.com.br/v1/sro-rastro/${codigoDeRastreio} eu sei, isso irá te ajudar muito! :)
 
-![Screenshot](screenshot/app_correiostracker_1.png)
-![Screenshot](screenshot/app_correiostracker_2.png)
-![Screenshot](screenshot/app_correiostracker_3.png)
+![Screenshot](screenshots/app_correiostracker_1.png)
+![Screenshot](screenshots/app_correiostracker_2.png)
+![Screenshot](screenshots/app_correiostracker_3.png)

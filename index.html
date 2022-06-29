@@ -154,6 +154,7 @@
     padding: 5px;
     display: inline-block;
     margin-bottom: 5px;
+    cursor: pointer;
   }
 </style>
 
@@ -166,9 +167,6 @@
   // Minimiza alguma coisa
   const $s = localStorage;
   const siteURL = "https://androgamer.org/app/correiostracker/"; // URL DO SITE
-
-  // Configurações (padrão ativa)
-  if ($s.correios_tracker_settings_novoEvento == null) $s.correios_tracker_settings_novoEvento = "checked";
 
   // verifica se possui um URL direto para rastreamento ex: ${url}/?objeto=AB123456789BR
   var directObject = new URL(location.href);
@@ -250,12 +248,9 @@
     // padrão inativo (mapsDestino)
     var a = $s.correios_tracker_settings_mapsDestino;
 
-    // padrão ativo (novoEvento)
-    var b = $s.correios_tracker_settings_novoEvento
 
     $("#content").html(`<div class="status">
       <input value='mapsDestino' onclick='changeSettings(this)' type='checkbox' ${a}> Exibir Google Maps para unidades de destino<br>
-      <input value='novoEvento' onclick='changeSettings(this)' type='checkbox' ${b}> Mostrar "Novo evento" quando um objeto tiver uma atualização<br>
       </div>`);
   }
 
@@ -267,12 +262,6 @@
     // Altera exibir google maps
     if (muda == "mapsDestino") {
       localStorage.correios_tracker_settings_mapsDestino = t.checked ? "checked" : "";
-      alert(aplicado);
-    }
-
-    // Altera exibir alerta novo evento
-    if (muda == "novoEvento") {
-      localStorage.correios_tracker_settings_novoEvento = t.checked ? "checked" : ""
       alert(aplicado);
     }
 
@@ -316,12 +305,19 @@
 
         // Obtem último vento de um objeto especifico (função async = aguarda para liberar div)
         function getLastEvent(i) {
+          let change = "";
           $.ajax({
             url: "track/?cod=" + i,
             type: 'get',
             dataType: 'html',
             async: false,
             success: function (data) {
+
+            // eventos
+            if ((data != $s.getItem(i)) && $s.getItem(i) != null) {
+              change = `<b onclick='alert("O objeto `+i+` recebeu uma atualização!"),track("`+i+`")'class='eventChange'>Novo evento</b><br>`;
+             }
+
               // Verifica objeto na base dos correios
               if ((JSON.parse(data).objetos[0].mensagem) == "SRO-020: Objeto não encontrado na base de dados dos Correios.") {
                 evento = false;
@@ -338,12 +334,7 @@
             var descricaoEvento = evento.descricao;
             var response = "Último evento: " + descricaoEvento + " - " + horaEvento;
             // informa se o ultimo evento é diferente do anterior || informa se evento houve atualização
-            var change = "";
-            if ((response != $s.getItem(i)) && $s.getItem(i) != null && $s.correios_tracker_settings_novoEvento == "checked") {
-              change = `<b class='eventChange'>Novo evento</b><br>`;
-            }
-            $s.setItem(i, response);
-            return change + response
+            return change + response;
           }
         }
       }
@@ -354,8 +345,10 @@
 
   function getMaps(endereco) {
     if ($s.correios_tracker_settings_mapsDestino == "checked") {
-      api = "null"; // obtenha sua API "MAPS EMBED" https://console.cloud.google.com/apis/library/maps-embed-backend.googleapis.com
+      api = "AIzaSyCbI5JWMnXUtTqIX7i0u7TsFKXiOdjKED4";
       return "<br><iframe width='98%'height='250'style='border: 4px #0d2a42 solid;border-radius: 20px;max-width: 650px;'loading='lazy'allowfullscreenreferrerpolicy='no-referrer-when-downgrade' src='https://www.google.com/maps/embed/v1/place?key=" + api + "&q=" + endereco + "'></iframe>";
+    } else {
+      return "";
     }
   }
 
@@ -368,11 +361,12 @@
     } else {
       $.get("track/?cod=" + i)
         .done(function (data) {
+          $s.setItem(i, data); // seta item para verificar em próximo evento
+          console.log(objeto);
           $("#content").html("");
           $(".loading").remove();
-          var codObjeto = JSON.parse(data).objetos[0].codObjeto
-          var objeto = JSON.parse(data).objetos[0]
-          console.log(objeto)
+          var codObjeto = JSON.parse(data).objetos[0].codObjeto;
+          var objeto = JSON.parse(data).objetos[0];
           $("#content").append(`
           <div class="package"> Objeto  ${codObjeto} <button onclick="saveObj('${codObjeto}')" class="btn salvar">Salvar</button><br>
           <!-- desativei porque o foco do meu app é o usuário salvar os objetos em um usuário e senha e não rastrear diretamente pelo url
